@@ -1,1 +1,1 @@
-# aoc2018
+Advent of Code Challange 2018
