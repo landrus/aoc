@@ -90,7 +90,7 @@ public class ChecksumCalculator {
 			if (boxIdLhs.charAt(i) == boxIdRhs.charAt(i)) {
 				common.append(boxIdLhs.charAt(i));
 			} else {
-				distance++;
+				if (distance++ > 1) break;
 			}
 		}
     	
