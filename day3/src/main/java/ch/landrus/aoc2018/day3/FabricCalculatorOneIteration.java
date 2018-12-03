@@ -40,12 +40,7 @@ public class FabricCalculatorOneIteration {
             for (int x = s.left; x < (s.left + s.x); x++) {
                 for (int y = s.top; y < (s.top + s.y); y++) {
                     if (fabric[x][y] == null) {
-                        fabric[x][y] = new Claim();
-                    }
-
-                    if (fabric[x][y].hitCounter == 0) {
-                        fabric[x][y].incrementHitCount();
-                        fabric[x][y].firstClaimId = s.id;
+                        fabric[x][y] = new Claim(s.id);
                         perfectClaims.add(s.id);
                     } else if (fabric[x][y].hitCounter == 1) {
                         fabric[x][y].incrementHitCount();
@@ -73,8 +68,13 @@ public class FabricCalculatorOneIteration {
 
     private static class Claim {
 
-        public int firstClaimId;
+        public final int firstClaimId;
         public int hitCounter;
+        
+        public Claim(int firstClaimId) {
+        	this.firstClaimId = firstClaimId;
+        	hitCounter = 1;
+        }
 
         public void incrementHitCount() {
             hitCounter++;
