@@ -67,6 +67,7 @@ public class FabricCalculatorOneIteration {
 
     public int getPerfectFitId() {
         perfectClaims.removeAll(overLappingClaims);
+        
         return perfectClaims.iterator().next();
     }
 
