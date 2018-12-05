@@ -95,11 +95,13 @@ public class FabricCalculator {
     }
     
     public static void main(String[] args) throws IOException, URISyntaxException {
+    	long start = System.currentTimeMillis();
     	URL inputUrl = FabricCalculator.class.getResource("/day3-input.txt");
     	Path inputPath = Paths.get(inputUrl.toURI());
         FabricCalculator calculator = new FabricCalculator(inputPath);
-        System.out.printf("Number of overlappings: %s", calculator.calculateOverlappings());
-        System.out.printf("\nPerfect fabric ID is: %s", calculator.perfectFabricId());
+        System.out.printf("Number of overlappings: %s\n", calculator.calculateOverlappings());
+        System.out.printf("Perfect fabric ID is: %s\n", calculator.perfectFabricId());
+        System.out.println(System.currentTimeMillis() - start);
     }
     
 }

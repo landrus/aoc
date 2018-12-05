@@ -17,10 +17,9 @@ import java.util.stream.Stream;
 public class FabricCalculatorOneIteration {
 
     private List<String> input;
-    private Claim[][] fabric = new Claim[1000][1000];
+    private int[][] fabric = new int[1000][1000];
     private int overLappings = 0;
     private Set<Integer> perfectClaims = new HashSet<>();
-    private Set<Integer> overLappingClaims = new HashSet<>();
 
     public FabricCalculatorOneIteration(Path inputFile) throws IOException {
         try(Stream<String> stream = Files.lines(inputFile)) {
@@ -36,20 +35,19 @@ public class FabricCalculatorOneIteration {
     public void calculateOverlappingsAndClaim() {
         input.stream().forEach(piece -> {
             Square s = new Square(piece);
+            perfectClaims.add(s.id);
 
             for (int x = s.left; x < (s.left + s.x); x++) {
                 for (int y = s.top; y < (s.top + s.y); y++) {
-                    if (fabric[x][y] == null) {
-                        fabric[x][y] = new Claim(s.id);
-                        perfectClaims.add(s.id);
-                    } else if (fabric[x][y].hitCounter == 1) {
-                        fabric[x][y].incrementHitCount();
+                    if (fabric[x][y] == 0) {
+                        fabric[x][y] = s.id;
+                    } else if (fabric[x][y] > 0) {
                         overLappings++;
-                        overLappingClaims.add(s.id);
-                        overLappingClaims.add(fabric[x][y].firstClaimId);
+                        perfectClaims.remove(s.id);
+                        perfectClaims.remove(fabric[x][y]);
+                        fabric[x][y] = -1;
                     } else {
-                        overLappingClaims.add(s.id);
-                        overLappingClaims.add(fabric[x][y].firstClaimId);
+                    	perfectClaims.remove(s.id);
                     }
                 }
             }
@@ -61,25 +59,7 @@ public class FabricCalculatorOneIteration {
     }
 
     public int getPerfectFitId() {
-        perfectClaims.removeAll(overLappingClaims);
-        
         return perfectClaims.iterator().next();
-    }
-
-    private static class Claim {
-
-        public final int firstClaimId;
-        public int hitCounter;
-        
-        public Claim(int firstClaimId) {
-        	this.firstClaimId = firstClaimId;
-        	hitCounter = 1;
-        }
-
-        public void incrementHitCount() {
-            hitCounter++;
-        }
-
     }
 
     private static class Square {
@@ -106,12 +86,13 @@ public class FabricCalculatorOneIteration {
     }
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        URL inputUrl = FabricCalculatorOneIteration.class.getResource("/day3-input.txt");
-        Path inputPath = Paths.get(inputUrl.toURI());
-        FabricCalculatorOneIteration calculator = new FabricCalculatorOneIteration(inputPath);
-        calculator.calculateOverlappingsAndClaim();
-        System.out.printf("Number of overlappings: %s", calculator.getOverlappings());
-        System.out.printf("\nPerfect fabric ID is: %s", calculator.getPerfectFitId());
+    	long start = System.currentTimeMillis();
+    	URL inputUrl = FabricCalculator.class.getResource("/day3-input.txt");
+    	Path inputPath = Paths.get(inputUrl.toURI());
+        FabricCalculator calculator = new FabricCalculator(inputPath);
+        System.out.printf("Number of overlappings: %s\n", calculator.calculateOverlappings());
+        System.out.printf("Perfect fabric ID is: %s\n", calculator.perfectFabricId());
+        System.out.println(System.currentTimeMillis() - start);
     }
 
 }
