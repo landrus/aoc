@@ -9,6 +9,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -20,7 +22,11 @@ public class CircuitBoard {
     private List<Line> lines1 = new ArrayList<>();
     private List<Line> lines2 = new ArrayList<>();
     
-    private List<Point> intersections = new ArrayList<>();
+    private Set<Point> intersections = new TreeSet<>((p1, p2) -> {
+		int absX = Math.abs(p1.x - p2.x);
+		int absY = Math.abs(p1.y- p2.y);
+		return absX + absY;
+	});
 
     public CircuitBoard(Path inputFile) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFile.toFile()))) {
@@ -36,7 +42,9 @@ public class CircuitBoard {
     	parseLines(line2, lines2);
     	calculateIntersections();
     	
-    	return -1;
+    	Point shortest = intersections.stream().findFirst().get();
+    	
+    	return Math.abs(shortest.x) + Math.abs(shortest.y);
     }
     
     private Point start;
@@ -65,15 +73,15 @@ public class CircuitBoard {
     }
     
     private void calculateIntersections() {
-    	for (int i = 0; i < lines1.size(); i++) {
-			Point intersection = lines1.get(i).intersect(lines2.get(i));
-			
-			if (intersection != null) {
-				intersections.add(intersection);
-			}
-		}
-    	
-    	//intersections.remove(0);
+    	lines1.stream().forEach(line1 -> {
+    		lines2.stream().forEach(line2 -> {
+    			Point intersection = line1.intersect(line1);
+    			
+    			if (intersection != null && !(intersection.x == 0 && intersection.y == 0)) {
+    				intersections.add(intersection);
+    			}
+    		});
+    	});
     }
 
     public int findNounVerb() {
