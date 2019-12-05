@@ -22,11 +22,7 @@ public class CircuitBoard {
     private List<Line> lines1 = new ArrayList<>();
     private List<Line> lines2 = new ArrayList<>();
     
-    private Set<Point> intersections = new TreeSet<>((p1, p2) -> {
-		int absX = Math.abs(p1.x - p2.x);
-		int absY = Math.abs(p1.y- p2.y);
-		return absX + absY;
-	});
+    private Set<Point> intersections = new TreeSet<>((p1, p2) -> p1.manhattenDistance() - p2.manhattenDistance());
 
     public CircuitBoard(Path inputFile) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFile.toFile()))) {
@@ -37,14 +33,14 @@ public class CircuitBoard {
         }
     }
 
-    public int manhattenDistance() {
+    public int shortestManhattenDistance() {
     	parseLines(line1, lines1);
     	parseLines(line2, lines2);
     	calculateIntersections();
     	
     	Point shortest = intersections.stream().findFirst().get();
     	
-    	return Math.abs(shortest.x) + Math.abs(shortest.y);
+    	return shortest.manhattenDistance();
     }
     
     private Point start;
@@ -52,7 +48,7 @@ public class CircuitBoard {
     private void parseLines(List<String> input, List<Line> parsed) {
     	start = new Point(0, 0);
     	
-    	input.stream().forEach(section -> {
+    	input.forEach(section -> {
     		char action = section.charAt(0);
     		boolean forward;
     		Line.Alignment alignment;
@@ -73,9 +69,9 @@ public class CircuitBoard {
     }
     
     private void calculateIntersections() {
-    	lines1.stream().forEach(line1 -> {
-    		lines2.stream().forEach(line2 -> {
-    			Point intersection = line1.intersect(line1);
+    	lines1.forEach(line1 -> {
+    		lines2.forEach(line2 -> {
+    			Point intersection = line1.intersect(line2);
     			
     			if (intersection != null && !(intersection.x == 0 && intersection.y == 0)) {
     				intersections.add(intersection);
@@ -84,7 +80,15 @@ public class CircuitBoard {
     	});
     }
 
-    public int findNounVerb() {
+    public int shortestSteps() {
+    	parseLines(line1, lines1);
+    	parseLines(line2, lines2);
+    	calculateIntersections();
+    	
+    	//steps: iterate over all intersections
+    	//  - find step length for both wires
+    	//    - for each line, check for hitting the intersection
+    	
     	return -1;
     }
 
@@ -92,8 +96,8 @@ public class CircuitBoard {
         URL inputUrl = CircuitBoard.class.getResource("/day3-input.txt");
         Path inputPath = Paths.get(inputUrl.toURI());
         CircuitBoard calculator = new CircuitBoard(inputPath);
-        System.out.printf("Part 1 answer: %s", calculator.manhattenDistance());
-        System.out.printf("\nPart 2 answer: %s", calculator.findNounVerb());
+        System.out.printf("Part 1 answer: %s", calculator.shortestManhattenDistance());
+        System.out.printf("\nPart 2 answer: %s", calculator.shortestSteps());
     }
     
     private static class Point {
@@ -104,6 +108,10 @@ public class CircuitBoard {
     	public Point(int x, int y) {
     		this.x = x;
     		this.y = y;
+    	}
+    	
+    	public int manhattenDistance() {
+    		return Math.abs(x) + Math.abs(y);
     	}
     	
     }
