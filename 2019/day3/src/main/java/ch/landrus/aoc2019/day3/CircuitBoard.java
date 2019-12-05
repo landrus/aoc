@@ -63,7 +63,7 @@ public class CircuitBoard {
     		
     		int amount = Integer.parseInt(section.substring(1));
     		Line line = new Line(start, alignment, amount, forward);
-    		start = line.getEndPoint();
+    		start = line.endPoint;
     		parsed.add(line);
     	});
     }
@@ -81,23 +81,35 @@ public class CircuitBoard {
     }
 
     public int shortestSteps() {
-    	parseLines(line1, lines1);
-    	parseLines(line2, lines2);
-    	calculateIntersections();
+    	int shortestDistance = -1;
     	
-    	//steps: iterate over all intersections
-    	//  - find step length for both wires
-    	//    - for each line, check for hitting the intersection
+    	for (Point point : intersections) {
+    		int distance1 = walkLine(lines1, point);
+    		int distance2 = walkLine(lines2, point);
+    		
+    		if (shortestDistance == -1 || (distance1 + distance2) < shortestDistance) {
+    			shortestDistance = distance1 + distance2;
+    		}
+		}
     	
-    	return -1;
+    	return shortestDistance;
     }
-
-    public static void main(String[] args) throws IOException, URISyntaxException {
-        URL inputUrl = CircuitBoard.class.getResource("/day3-input.txt");
-        Path inputPath = Paths.get(inputUrl.toURI());
-        CircuitBoard calculator = new CircuitBoard(inputPath);
-        System.out.printf("Part 1 answer: %s", calculator.shortestManhattenDistance());
-        System.out.printf("\nPart 2 answer: %s", calculator.shortestSteps());
+    
+    private int walkLine(List<Line> lines, Point intersection) {
+    	int distance = 0;
+    	
+    	for (Line line : lines) {
+    		int steps = line.intersect(intersection);
+    		
+    		if (steps == -1) {
+    			distance += line.length;
+    		} else {
+    			distance += steps;
+    			break;
+    		}
+    	};
+    	
+    	return distance;
     }
     
     private static class Point {
@@ -124,12 +136,17 @@ public class CircuitBoard {
     	public final int x2;
     	public final int y1;
     	public final int y2;
-    	public final Alignment alignment;
+    	public final int length;
+
+    	public final boolean forward;
     	public final Point endPoint;
+    	public final Alignment alignment;
     	
     	public Line(Point start, Alignment alignment, int amount, boolean forward) {
+    		this.forward = forward;
     		this.alignment = alignment;
     		int endX, endY;
+			length = amount;
     		
     		if (alignment == Alignment.HORIZONTAL) {
     			if (forward) {
@@ -162,10 +179,6 @@ public class CircuitBoard {
     		}
     		
     		endPoint = new Point(endX, endY);
-    	}
-    	
-    	public Point getEndPoint() {
-    		return endPoint;
     	}
     	
     	public Point intersect(Line other) {
@@ -201,6 +214,41 @@ public class CircuitBoard {
 			return new Point(x, y);
     	}
     	
+    	public int intersect(Point p) {
+    		int distance = -1;
+    		
+    		if (alignment == Alignment.HORIZONTAL) {
+    			if (p.y == y1) {
+    				if (p.x >= x1 && p.x <= x2) {
+    					if (forward) {
+    						distance = p.x - x1;
+    					} else {
+    						distance = x2 - p.x;
+    					}
+    				}
+    			}
+    		} else {
+    			if (p.x == x1) {
+    				if (p.y >= y1 && p.y <= y2) {
+    					if (forward) {
+    						distance = p.y - y1;
+    					} else {
+    						distance = y2 - p.y;
+    					}
+    				}
+    			}
+    		}
+    		
+    		return distance;
+    	}
+    }
+
+    public static void main(String[] args) throws IOException, URISyntaxException {
+        URL inputUrl = CircuitBoard.class.getResource("/day3-input.txt");
+        Path inputPath = Paths.get(inputUrl.toURI());
+        CircuitBoard calculator = new CircuitBoard(inputPath);
+        System.out.printf("Part 1 answer: %s", calculator.shortestManhattenDistance());
+        System.out.printf("\nPart 2 answer: %s", calculator.shortestSteps());
     }
 
 }
