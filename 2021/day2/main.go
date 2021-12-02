@@ -5,12 +5,12 @@ import (
 	"strings"
 
 	"github.com/landrus/aoc/2021/day2/commander"
-	"github.com/landrus/aoc/2021/day2/sub"
+	"github.com/landrus/aoc/2021/day2/submarine"
 	"github.com/landrus/aoc/2021/utils"
 )
 
-func pathing(inputFileName string, commander sub.Commander) int {
-	sub := sub.Submarine{
+func pathing(inputFileName string, commander submarine.Commander) int {
+	sub := submarine.Submarine{
 		Commander: commander,
 	}
 
@@ -29,10 +29,10 @@ func pathing(inputFileName string, commander sub.Commander) int {
 		}
 	})
 
-	return sub.GetPosition()
+	return sub.Location()
 }
 
 func main() {
-	println(pathing("day2-input.txt", &commander.SimpleCommander{}))
-	println(pathing("day2-input.txt", &commander.ComplexCommander{}))
+	println(pathing("day2-input.txt", new(commander.Simple)))
+	println(pathing("day2-input.txt", new(commander.Complex)))
 }

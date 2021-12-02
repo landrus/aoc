@@ -1,4 +1,4 @@
-package sub
+package submarine
 
 type Submarine struct {
 	Position
@@ -15,6 +15,6 @@ type Commander interface {
 	Dive(pos *Position, amount int)
 }
 
-func (sub *Submarine) GetPosition() int {
+func (sub *Submarine) Location() int {
 	return sub.Depth * sub.Horizontal
 }
