@@ -16,7 +16,11 @@ func pathing(inputFileName string, commander submarine.Commander) int {
 
 	utils.FileLineExecutor(inputFileName, func(line string) error {
 		actions := strings.Fields(line)
-		amount, _ := strconv.Atoi(actions[1])
+		amount, err := strconv.Atoi(actions[1])
+
+		if err != nil {
+			return err
+		}
 
 		switch actions[0] {
 		case "forward":
