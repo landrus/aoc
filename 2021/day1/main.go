@@ -10,7 +10,7 @@ func depthIncreases(inputFileName string) int {
 	increments := -1
 	previous := -1
 
-	utils.FileLineExecutor(inputFileName, func(line string) {
+	utils.FileLineExecutor(inputFileName, func(line string) error {
 		depth, _ := strconv.Atoi(line)
 
 		if depth > previous {
@@ -18,6 +18,8 @@ func depthIncreases(inputFileName string) int {
 		}
 
 		previous = depth
+
+		return nil
 	})
 
 	return increments
@@ -31,7 +33,7 @@ func depthIncreasesWindow(inputFileName string) int {
 	pos := 0
 	lineCounter := 0
 
-	utils.FileLineExecutor(inputFileName, func(line string) {
+	utils.FileLineExecutor(inputFileName, func(line string) error {
 		depth, _ := strconv.Atoi(line)
 
 		pos = lineCounter % 3
@@ -44,6 +46,8 @@ func depthIncreasesWindow(inputFileName string) int {
 
 		lineCounter++
 		previousSum = sum
+
+		return nil
 	})
 
 	return increments
