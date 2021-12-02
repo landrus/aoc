@@ -18,13 +18,12 @@ func pathing(inputFileName string, commander submarine.Commander) int {
 		actions := strings.Fields(line)
 		amount, _ := strconv.Atoi(actions[1])
 
-		if actions[0] == "forward" {
+		switch actions[0] {
+		case "forward":
 			sub.Forward(&sub.Position, amount)
-		} else {
-			if actions[0] == "up" {
-				amount *= -1
-			}
-
+		case "up":
+			sub.Dive(&sub.Position, amount*-1)
+		case "down":
 			sub.Dive(&sub.Position, amount)
 		}
 
