@@ -2,10 +2,11 @@ package utils
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 )
 
-func FileLineExecutor(fileName string, lineExecutor func(line string)) error {
+func FileLineExecutor(fileName string, lineExecutor func(line string) error) error {
 	file, err := os.Open(fileName)
 
 	if err != nil {
@@ -19,7 +20,11 @@ func FileLineExecutor(fileName string, lineExecutor func(line string)) error {
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		lineExecutor(line)
+		err = lineExecutor(line)
+
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 
 	return nil

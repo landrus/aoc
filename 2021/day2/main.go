@@ -14,7 +14,7 @@ func pathing(inputFileName string, commander submarine.Commander) int {
 		Commander: commander,
 	}
 
-	utils.FileLineExecutor(inputFileName, func(line string) {
+	utils.FileLineExecutor(inputFileName, func(line string) error {
 		actions := strings.Fields(line)
 		amount, _ := strconv.Atoi(actions[1])
 
@@ -27,6 +27,8 @@ func pathing(inputFileName string, commander submarine.Commander) int {
 
 			sub.Dive(&sub.Position, amount)
 		}
+
+		return nil
 	})
 
 	return sub.Location()
