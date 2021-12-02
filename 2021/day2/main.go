@@ -1,19 +1,17 @@
 package main
 
 import (
-	"bufio"
 	"strconv"
 	"strings"
 
 	"github.com/landrus/aoc/2021/utils"
 )
 
-func pathing(inputScanner *bufio.Scanner) int {
+func pathing(inputFileName string) int {
 	horizontal := 0
 	vertical := 0
 
-	for inputScanner.Scan() {
-		line := inputScanner.Text()
+	utils.FileLineExecutor(inputFileName, func(line string) {
 		actions := strings.Fields(line)
 		amount, _ := strconv.Atoi(actions[1])
 
@@ -24,18 +22,17 @@ func pathing(inputScanner *bufio.Scanner) int {
 		} else {
 			vertical += amount
 		}
-	}
+	})
 
 	return horizontal * vertical
 }
 
-func pathing2(inputScanner *bufio.Scanner) int {
+func pathing2(inputFileName string) int {
 	horizontal := 0
 	vertical := 0
 	aim := 0
 
-	for inputScanner.Scan() {
-		line := inputScanner.Text()
+	utils.FileLineExecutor(inputFileName, func(line string) {
 		actions := strings.Fields(line)
 		amount, _ := strconv.Atoi(actions[1])
 
@@ -47,14 +44,12 @@ func pathing2(inputScanner *bufio.Scanner) int {
 		} else {
 			aim += amount
 		}
-	}
+	})
 
 	return horizontal * vertical
 }
 
 func main() {
-	input := utils.ScannerForFile("day2-input.txt")
-	println(pathing(input))
-	input = utils.ScannerForFile("day2-input.txt")
-	println(pathing2(input))
+	println(pathing("day2-input.txt"))
+	println(pathing2("day2-input.txt"))
 }

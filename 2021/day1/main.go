@@ -1,18 +1,16 @@
 package main
 
 import (
-	"bufio"
 	"strconv"
 
 	"github.com/landrus/aoc/2021/utils"
 )
 
-func depthIncreases(inputScanner *bufio.Scanner) int {
+func depthIncreases(inputFileName string) int {
 	increments := -1
 	previous := -1
 
-	for inputScanner.Scan() {
-		line := inputScanner.Text()
+	utils.FileLineExecutor(inputFileName, func(line string) {
 		depth, _ := strconv.Atoi(line)
 
 		if depth > previous {
@@ -20,12 +18,12 @@ func depthIncreases(inputScanner *bufio.Scanner) int {
 		}
 
 		previous = depth
-	}
+	})
 
 	return increments
 }
 
-func depthIncreasesWindow(inputScanner *bufio.Scanner) int {
+func depthIncreasesWindow(inputFileName string) int {
 	increments := -1
 	previousSum := 0
 
@@ -33,8 +31,7 @@ func depthIncreasesWindow(inputScanner *bufio.Scanner) int {
 	pos := 0
 	lineCounter := 0
 
-	for inputScanner.Scan() {
-		line := inputScanner.Text()
+	utils.FileLineExecutor(inputFileName, func(line string) {
 		depth, _ := strconv.Atoi(line)
 
 		pos = lineCounter % 3
@@ -47,15 +44,12 @@ func depthIncreasesWindow(inputScanner *bufio.Scanner) int {
 
 		lineCounter++
 		previousSum = sum
-	}
+	})
 
 	return increments
 }
 
 func main() {
-	input := utils.ScannerForFile("day1-input.txt")
-	println(depthIncreases(input))
-
-	input = utils.ScannerForFile("day1-input.txt")
-	println(depthIncreasesWindow(input))
+	println(depthIncreases("day1-input.txt"))
+	println(depthIncreasesWindow("day1-input.txt"))
 }
