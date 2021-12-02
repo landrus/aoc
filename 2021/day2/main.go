@@ -4,52 +4,35 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/landrus/aoc/2021/day2/commander"
+	"github.com/landrus/aoc/2021/day2/sub"
 	"github.com/landrus/aoc/2021/utils"
 )
 
-func pathing(inputFileName string) int {
-	horizontal := 0
-	vertical := 0
+func pathing(inputFileName string, commander sub.Commander) int {
+	sub := sub.Submarine{
+		Commander: commander,
+	}
 
 	utils.FileLineExecutor(inputFileName, func(line string) {
 		actions := strings.Fields(line)
 		amount, _ := strconv.Atoi(actions[1])
 
 		if actions[0] == "forward" {
-			horizontal += amount
-		} else if actions[0] == "up" {
-			vertical -= amount
+			sub.Forward(&sub.Position, amount)
 		} else {
-			vertical += amount
+			if actions[0] == "up" {
+				amount *= -1
+			}
+
+			sub.Dive(&sub.Position, amount)
 		}
 	})
 
-	return horizontal * vertical
-}
-
-func pathing2(inputFileName string) int {
-	horizontal := 0
-	vertical := 0
-	aim := 0
-
-	utils.FileLineExecutor(inputFileName, func(line string) {
-		actions := strings.Fields(line)
-		amount, _ := strconv.Atoi(actions[1])
-
-		if actions[0] == "forward" {
-			horizontal += amount
-			vertical += aim * amount
-		} else if actions[0] == "up" {
-			aim -= amount
-		} else {
-			aim += amount
-		}
-	})
-
-	return horizontal * vertical
+	return sub.GetPosition()
 }
 
 func main() {
-	println(pathing("day2-input.txt"))
-	println(pathing2("day2-input.txt"))
+	println(pathing("day2-input.txt", &commander.SimpleCommander{}))
+	println(pathing("day2-input.txt", &commander.ComplexCommander{}))
 }
