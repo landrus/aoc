@@ -2,8 +2,9 @@ package main
 
 import (
 	"bufio"
-	"os"
 	"strconv"
+
+	"github.com/landrus/aoc/2021/utils"
 )
 
 func depthIncreases(inputScanner *bufio.Scanner) int {
@@ -52,21 +53,9 @@ func depthIncreasesWindow(inputScanner *bufio.Scanner) int {
 }
 
 func main() {
-	input := scannerForFile("day1-input.txt")
+	input := utils.ScannerForFile("day1-input.txt")
 	println(depthIncreases(input))
 
-	input = scannerForFile("day1-input.txt")
+	input = utils.ScannerForFile("day1-input.txt")
 	println(depthIncreasesWindow(input))
-}
-
-func scannerForFile(fileName string) *bufio.Scanner {
-	file, err := os.Open(fileName)
-
-	if err != nil {
-		panic(err)
-	}
-
-	reader := bufio.NewReader(file)
-
-	return bufio.NewScanner(reader)
 }

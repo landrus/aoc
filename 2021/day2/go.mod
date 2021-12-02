@@ -1,4 +1,4 @@
-module github.com/landrus/aoc/2021/day1
+module github.com/landrus/aoc/2021/day2
 
 go 1.17
 
