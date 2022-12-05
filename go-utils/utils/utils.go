@@ -29,3 +29,13 @@ func FileLineExecutor(fileName string, lineExecutor func(line string) error) err
 
 	return nil
 }
+
+func Lines(inputFileName string) (lines []string) {
+	FileLineExecutor(inputFileName, func(line string) error {
+		lines = append(lines, line)
+
+		return nil
+	})
+
+	return lines
+}

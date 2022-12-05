@@ -45,8 +45,8 @@ func energyConsumption(inputFileName string, bitLength int) int {
 }
 
 func oxygenAndCO2(inputFileName string, bitLength int) int {
-	oxygen := calculate(lines(inputFileName), 0, bitLength, true)
-	co2 := calculate(lines(inputFileName), 0, bitLength, false)
+	oxygen := calculate(utils.Lines(inputFileName), 0, bitLength, true)
+	co2 := calculate(utils.Lines(inputFileName), 0, bitLength, false)
 
 	oxygenInt, _ := strconv.ParseInt(oxygen, 2, 0)
 	co2Int, _ := strconv.ParseInt(co2, 2, 0)
@@ -91,16 +91,6 @@ func filter(lines []string, bitPosition int, filterBit byte) (linesFiltered []st
 	}
 
 	return linesFiltered
-}
-
-func lines(inputFileName string) (lines []string) {
-	utils.FileLineExecutor(inputFileName, func(line string) error {
-		lines = append(lines, line)
-
-		return nil
-	})
-
-	return lines
 }
 
 func main() {

@@ -14,16 +14,28 @@ func organizeRucksack(inputFileName string) int {
 	utils.FileLineExecutor(inputFileName, func(line string) error {
 		rucksackLength := len(line)
 		allItems := strings.Split(line, "")
-		set1 := hashset.New(convertStringSlice(allItems[:rucksackLength/2])...)
-		set2 := hashset.New(convertStringSlice(allItems[rucksackLength/2 : rucksackLength])...)
-		common := set1.Intersection(set2)
-		s := fmt.Sprint(common.Values()[0])
-		score += convertIntValue(s)
+		score += prioritiesRucksack(allItems[:rucksackLength/2], allItems[rucksackLength/2:rucksackLength])
 
 		return nil
 	})
 
 	return score
+}
+
+func prioritiesRucksack(items1 []string, items2 []string) int {
+	set1 := hashset.New(convertStringSlice(items1)...)
+	set2 := hashset.New(convertStringSlice(items2)...)
+	common := set1.Intersection(set2)
+	s := fmt.Sprint(common.Values()[0])
+	return convertIntValue(s)
+}
+
+func convertStringSlice(s []string) []interface{} {
+	b := make([]interface{}, len(s))
+	for i := range s {
+		b[i] = s[i]
+	}
+	return b
 }
 
 func convertIntValue(s string) int {
@@ -38,26 +50,24 @@ func convertIntValue(s string) int {
 
 }
 
-func convertStringSlice(s []string) []interface{} {
-	b := make([]interface{}, len(s))
-	for i := range s {
-		b[i] = s[i]
-	}
-	return b
-}
-
-func rockPaperScissorsScore2(inputFileName string) int {
+func prioritiesRucksackGroup(inputFileName string) int {
 	score := 0
+	lines := utils.Lines(inputFileName)
 
-	utils.FileLineExecutor(inputFileName, func(line string) error {
+	for i := 0; i < len(lines); i += 3 {
+		set1 := hashset.New(convertStringSlice(strings.Split(lines[i], ""))...)
+		set2 := hashset.New(convertStringSlice(strings.Split(lines[i+1], ""))...)
+		set3 := hashset.New(convertStringSlice(strings.Split(lines[i+2], ""))...)
 
-		return nil
-	})
+		common := set1.Intersection(set2).Intersection(set3)
+		s := fmt.Sprint(common.Values()[0])
+		score += convertIntValue(s)
+	}
 
 	return score
 }
 
 func main() {
 	println(organizeRucksack("day3-input.txt"))
-	println(rockPaperScissorsScore2("day3-input.txt"))
+	println(prioritiesRucksackGroup("day3-input.txt"))
 }
